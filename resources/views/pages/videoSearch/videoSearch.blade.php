@@ -19,14 +19,24 @@
 
     <div id="content" class="search-v1">
         <div class="panel">
-          <div class="panel-body">
+            <div class="panel-body">
+                {{-- @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <div class="alert alert-danger" role="alert">
+                            {{$error}}
+                        </div>
+                    @endforeach
+                @endif --}}
             <div class="col-md-12">
-                 <div class="input-group">
-                  <input type="text" class="form-control" aria-label="...">
-                  <div class="input-group-btn">
-                    <button type="button" class="btn btn-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Search</button>
-                  </div><!-- /btn-group -->
-                </div><!-- /input-group -->
+                <form action="{{route('search')}}" method="post">
+                    {{csrf_field()}}
+                     <div class="input-group">
+                        <input name="search_words" type="search" class="form-control" aria-label="...">
+                        <div class="input-group-btn">
+                          <button type="submit" class="btn btn-success">Search</button>
+                        </div><!-- /btn-group -->
+                    </div><!-- /input-group -->
+                </form>
             </div>
           </div>
         </div>

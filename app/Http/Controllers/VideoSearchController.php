@@ -13,31 +13,51 @@ class VideoSearchController extends Controller
      */
     public function index()
     {
-        // $metaTittle = "Video Search";
+        $metaTittle = "Video Search";
 
-        // return view ('pages.videoSearch.videoSearch', [
-        //     'metaTittle' => $metaTittle,
-        // ]);
+        return view ('pages.videoSearch.videoSearch', [
+            'metaTittle' => $metaTittle,
+        ]);
+
+        // $API_KEY = 'AIzaSyALIazv-Vj8z1XW4RnhNZvoaywAYKld6Dg';
         
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://www.googleapis.com/youtube/v3/search?key=AIzaSyALIazv-Vj8z1XW4RnhNZvoaywAYKld6Dg&type=video",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "GET",
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        // echo $response;
-        dd(json_decode($response));
         
+    }
+
+    public function search(Request $request)
+    {
+        // dd(!is_null($request->search));
+        // $search_words = $request->get('search_words');
+        
+        $this->validate($request,
+        [
+            'search_words' => 'required|max:255',
+        ]);
+        
+        $search_words =  $request->search_words;
+        $q            = Str_slug($search_words);
+        
+        if (!is_null($search_words)) {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyCB3sAslNiqej67Y5xX9d43HZ4pct3rxuY&type=video&q=".$q,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            // echo $response;
+            dd(json_decode($response));
+
+        } 
     }
 
     /**
