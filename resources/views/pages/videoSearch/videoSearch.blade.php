@@ -20,13 +20,13 @@
     <div id="content" class="search-v1">
         <div class="panel">
             <div class="panel-body">
-                {{-- @if ($errors->any())
+                @if ($errors->any())
                     @foreach ($errors->all() as $error)
                         <div class="alert alert-danger" role="alert">
                             {{$error}}
                         </div>
                     @endforeach
-                @endif --}}
+                @endif
             <div class="col-md-12">
                 <form action="{{route('search')}}" method="post">
                     {{csrf_field()}}
