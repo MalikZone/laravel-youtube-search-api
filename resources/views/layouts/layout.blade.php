@@ -661,6 +661,7 @@
 
     <!-- start: Javascript -->
         @include('includes.script')
+        @stack('ajax')
     <!-- end: Javascript -->
   </body>
 </html>

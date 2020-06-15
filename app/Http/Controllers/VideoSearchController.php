@@ -27,7 +27,7 @@ class VideoSearchController extends Controller
 
         // $search_words = $request->get('search_words');
 
-        // $DEVELOPER_KEY = 'AIzaSyAVfRizj7dinjssutW5vWOO2R6LsVC9XEs';
+        $DEVELOPER_KEY = 'AIzaSyDiphYcEBSw0Ls-d-OH_WGmxrSVgjiANCk';
         // dd($DEVELOPER_KEY);
         $this->validate($request,
         [
@@ -36,16 +36,12 @@ class VideoSearchController extends Controller
         
         $search_words =  $request->search_words;
         $q            = Str_slug($search_words);
-        // dd();
-        // $link = "https://www.googleapis.com/youtube/v3/search?part=snippet&key=".$DEVELOPER_KEY."type=video&q=".$q;
-        // dd($link);
         
         if (!is_null($search_words)) {
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-            // CURLOPT_URL => $link,
-            CURLOPT_URL => "https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyDiphYcEBSw0Ls-d-OH_WGmxrSVgjiANCk&type=video&maxResults=25&q=".$q,
+            CURLOPT_URL => "https://www.googleapis.com/youtube/v3/search?part=snippet&key=".$DEVELOPER_KEY."&type=video&maxResults=25&q=".$q,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -62,13 +58,12 @@ class VideoSearchController extends Controller
             
             $array = json_decode($response, true);
             // dd($array);
-            // $youtube_list = $array['items'];
             $youtubeList = $array['items'];
             // dd($youtubeList);
             $metaTittle = "Video Search";
-        
+            $q            = $search_words;
+
             return view('pages.videoSearch.videoSearch', compact('youtubeList', 'metaTittle','q'));
-                // 'metaTittle' => $);
         } 
     }
 
