@@ -16,6 +16,6 @@
 // });
 
 Route::get('/', 'DashboardController@index')->name('dashboard');
-Route::get('/VideoSearch', 'VideoSearchController@index')->name('video-search');
+Route::get('/video-search', 'VideoSearchController@index')->name('video-search');
 Route::post('/search', 'VideoSearchController@search')->name('search');
 

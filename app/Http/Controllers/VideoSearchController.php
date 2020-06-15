@@ -14,21 +14,21 @@ class VideoSearchController extends Controller
     public function index()
     {
         $metaTittle = "Video Search";
-
-        return view ('pages.videoSearch.videoSearch', [
-            'metaTittle' => $metaTittle,
-        ]);
-
-        // $API_KEY = 'AIzaSyALIazv-Vj8z1XW4RnhNZvoaywAYKld6Dg';
         
-        
+
+        return view ('pages.videoSearch.videoSearch', compact('metaTittle'));
     }
 
     public function search(Request $request)
     {
-        // dd(!is_null($request->search));
+        // $check = $request->search_words;
+        // dd($check);
+        // dd(!is_null($request->search_words));
+
         // $search_words = $request->get('search_words');
-        
+
+        // $DEVELOPER_KEY = 'AIzaSyAVfRizj7dinjssutW5vWOO2R6LsVC9XEs';
+        // dd($DEVELOPER_KEY);
         $this->validate($request,
         [
             'search_words' => 'required|max:255',
@@ -36,12 +36,16 @@ class VideoSearchController extends Controller
         
         $search_words =  $request->search_words;
         $q            = Str_slug($search_words);
+        // dd();
+        // $link = "https://www.googleapis.com/youtube/v3/search?part=snippet&key=".$DEVELOPER_KEY."type=video&q=".$q;
+        // dd($link);
         
         if (!is_null($search_words)) {
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyCB3sAslNiqej67Y5xX9d43HZ4pct3rxuY&type=video&q=".$q,
+            // CURLOPT_URL => $link,
+            CURLOPT_URL => "https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyDiphYcEBSw0Ls-d-OH_WGmxrSVgjiANCk&type=video&maxResults=25&q=".$q,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -52,11 +56,19 @@ class VideoSearchController extends Controller
             ));
 
             $response = curl_exec($curl);
-
             curl_close($curl);
             // echo $response;
-            dd(json_decode($response));
-
+            // dd(json_decode($response, true));
+            
+            $array = json_decode($response, true);
+            // dd($array);
+            // $youtube_list = $array['items'];
+            $youtubeList = $array['items'];
+            // dd($youtubeList);
+            $metaTittle = "Video Search";
+        
+            return view('pages.videoSearch.videoSearch', compact('youtubeList', 'metaTittle','q'));
+                // 'metaTittle' => $);
         } 
     }
 
