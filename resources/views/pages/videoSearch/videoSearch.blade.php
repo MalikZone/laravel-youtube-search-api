@@ -13,12 +13,13 @@
                     @endforeach
                 @endif
             <div class="col-md-12">
-                <form action="{{route('search')}}" method="post">
+                {{-- <form action="{{route('search')}}" method="post"> --}}
+                <form action="{{route('ajax-search')}}" method="get">
                     {{csrf_field()}}
                      <div class="input-group">
-                        <input name="search_words" type="search" class="form-control" aria-label="...">
+                        <input name="searchWords" id="search-words" type="search" class="form-control" aria-label="..." placeholder="search">
                         <div class="input-group-btn">
-                          <button id="search" type="submit" class="btn btn-success">Search</button>
+                          <button id="search" type="button" class="btn btn-success">Search</button>
                         </div><!-- /btn-group -->
                     </div><!-- /input-group -->
                 </form>
@@ -40,7 +41,7 @@
                                     <th>Channel Title</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="youtubeList">
                                 {{-- @if (isset($youtubeList))
                                     @foreach ($youtubeList as $items)
                                         <tr>
@@ -74,11 +75,78 @@
 
 @push('ajax')
     <script type="text/javascript">
-        $('#search').on('click', function(){
-            // alert("halo");
-            $.get("{{URL::to('ajax-even-search')}}", function(data){
-                console.log(data);
+            // $('#search').on('click', function(){
+            // // alert("halo");
+            //     $.get("{{URL::to('/ajax-even-search')}}", function(data){
+            //         console.log(data);
+            //     });
+            // });
+
+            // $("#search").click(function(){
+            // // alert("halo");
+            //     $.ajax({
+            //         type:'GET',
+            //         url:'/ajax-even-search',
+            //         data:{
+            //             '_token':$('input[name=_token]').val(),
+            //             'searchWords':$('#searchWords').val()
+            //         },
+            //         success:function(data){
+            //             console.log(data);
+            //         }
+            //     });
+            // });
+
+            $(document).ready(function(){
+                
+                // var nextPageToken = '';
+
+                $("#search").on("click", function(){
+
+                    var words = $("#search-words").val();
+                    // var base_url = window.location.origin;
+                    // console.log(base_url+"/ajax-even-search");
+                    
+                    console.log(words);
+                    $.ajax({
+                        method: "GET",
+                        url: "/ajax-even-search",
+                        data: {searchWords:words},
+                        success: function(data) {
+                            console.log(data);
+                            // var data = result.data;
+                            var res='';
+                            $.each(data, function (key, value) {
+                                res +=
+                                // '<tr>'+
+                                //     '<td>'+value.id.videoId+'</td>'+
+                                //     '<td>'+words+'</td>'+
+                                //     '<td>'+'<a href="https://www.youtube.com/watch?v="'>'+value.id.videoId+'</a>'+'</td>'+
+                                //     '<td>'+value.snippet.title+'</td>'+
+                                //     '<td>'+value.snippet.channelTitle+'</td>'+
+                                // '</tr>'
+                                `<tr>
+                                    <td>${value.id.videoId}</td>
+                                    <td>${words}</td>
+                                    <td>
+                                        <a href="https://www.youtube.com/watch?v=${value.id.videoId}" target="_blank">
+                                            <img src="${value.snippet.thumbnails.default.url}">
+                                        </a>
+                                    </td>
+                                    <td>${value.snippet.title}</td>
+                                    <td>${value.snippet.channelTitle}</td>
+                                </tr>`
+                            });
+                            $('#youtubeList').html(res);
+                            // for(var i = 0; i <= data.length; i++)
+                            // $('#youtubeList').append(''+
+
+                            // );
+                        }
+                    });
+                
+                });
+
             });
-        })
     </script>
 @endpush
