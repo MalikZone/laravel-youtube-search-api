@@ -34,14 +34,16 @@ class VideoSearchController extends Controller
             'searchWords' => 'required|max:255',
         ]);
         
-        $searchWords =  $request->searchWords;
-        $q            = Str_slug($searchWords);
-        
+        $searchWords    = $request->searchWords;
+        $nextPageToken  = $request->pageToken;
+        $q              = Str_slug($searchWords);
+        // $link = "https://www.googleapis.com/youtube/v3/search?part=snippet&key=$DEVELOPER_KEY&type=video&maxResults=20&q=$q&pageToken=$nextPageToken";
+
         if (!is_null($searchWords)) {
             $curl = curl_init();
 
             // curl_setopt_array($curl, array(
-            // CURLOPT_URL => "https://www.googleapis.com/youtube/v3/search?part=snippet&key=".$DEVELOPER_KEY."&type=video&maxResults=25&q=".$q,
+            // CURLOPT_URL => $link,
             // CURLOPT_RETURNTRANSFER => true,
             // CURLOPT_ENCODING => "",
             // CURLOPT_MAXREDIRS => 10,
@@ -51,7 +53,7 @@ class VideoSearchController extends Controller
             // CURLOPT_CUSTOMREQUEST => "GET",
             // ));
 
-            // $response = curl_exec($curl);
+            $response = curl_exec($curl);
             curl_close($curl);
             // echo $response
             // dd(json_encode(json_decode($response, true)));
@@ -68,11 +70,11 @@ class VideoSearchController extends Controller
 
             // dd($response);
             // return $response;
-            
+
             $array = json_decode($response, true);
-            $youtubeList = $array['items'];
+            $items = $array;
             
-            return response()->json($youtubeList);
+            return response()->json($items);
         } 
     }
 

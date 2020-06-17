@@ -34,9 +34,9 @@
                         <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Video Id</th>
                                     <th>Keywords</th>
-                                    <th>thumbnail</th>
+                                    <th>Thumbnails</th>
+                                    <th>Description</th>
                                     <th>Title</th>
                                     <th>Channel Title</th>
                                 </tr>
@@ -62,6 +62,9 @@
                     </div>
                   </div>
                 </div>
+                <div id="showMore" class="input-group-btn">
+                    <button id="btnShow" type="button" class="btn btn-primary">Show More</button>
+                </div><!-- /btn-group -->
               </div>  
             </div>
             {{-- end-table --}}
@@ -75,76 +78,51 @@
 
 @push('ajax')
     <script type="text/javascript">
-            // $('#search').on('click', function(){
-            // // alert("halo");
-            //     $.get("{{URL::to('/ajax-even-search')}}", function(data){
-            //         console.log(data);
-            //     });
-            // });
-
-            // $("#search").click(function(){
-            // // alert("halo");
-            //     $.ajax({
-            //         type:'GET',
-            //         url:'/ajax-even-search',
-            //         data:{
-            //             '_token':$('input[name=_token]').val(),
-            //             'searchWords':$('#searchWords').val()
-            //         },
-            //         success:function(data){
-            //             console.log(data);
-            //         }
-            //     });
-            // });
-
             $(document).ready(function(){
+                $('#showMore').hide();
                 
-                // var nextPageToken = '';
+                var nextPageToken = '';
 
                 $("#search").on("click", function(){
 
                     var words = $("#search-words").val();
-                    // var base_url = window.location.origin;
-                    // console.log(base_url+"/ajax-even-search");
-                    
-                    console.log(words);
+
+                    if (words = $("#search-words").val()) {
+                        $('#showMore').show();
+                    }
+
                     $.ajax({
                         method: "GET",
                         url: "/ajax-even-search",
-                        data: {searchWords:words},
+                        data: {
+                                searchWords:words,
+                                pageToken:nextPageToken,
+                            },
                         success: function(data) {
-                            console.log(data);
-                            // var data = result.data;
-                            var res='';
-                            $.each(data, function (key, value) {
+                            nextPageToken = data.nextPageToken;
+                            // console.log(nextPageToken);
+                            var res = '';
+                            $.each(data.items, function(key, value){
                                 res +=
-                                // '<tr>'+
-                                //     '<td>'+value.id.videoId+'</td>'+
-                                //     '<td>'+words+'</td>'+
-                                //     '<td>'+'<a href="https://www.youtube.com/watch?v="'>'+value.id.videoId+'</a>'+'</td>'+
-                                //     '<td>'+value.snippet.title+'</td>'+
-                                //     '<td>'+value.snippet.channelTitle+'</td>'+
-                                // '</tr>'
                                 `<tr>
-                                    <td>${value.id.videoId}</td>
                                     <td>${words}</td>
                                     <td>
                                         <a href="https://www.youtube.com/watch?v=${value.id.videoId}" target="_blank">
                                             <img src="${value.snippet.thumbnails.default.url}">
                                         </a>
                                     </td>
+                                    <td>${value.snippet.description}</td>
                                     <td>${value.snippet.title}</td>
                                     <td>${value.snippet.channelTitle}</td>
                                 </tr>`
                             });
                             $('#youtubeList').html(res);
-                            // for(var i = 0; i <= data.length; i++)
-                            // $('#youtubeList').append(''+
-
-                            // );
                         }
                     });
-                
+                });
+
+                $('#btnShow').click(function(){
+                    alert('hallo');
                 });
 
             });
