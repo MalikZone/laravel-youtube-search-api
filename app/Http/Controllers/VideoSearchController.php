@@ -39,7 +39,7 @@ class VideoSearchController extends Controller
         $q              = Str_slug($searchWords);
         // $link = "https://www.googleapis.com/youtube/v3/search?part=snippet&key=$DEVELOPER_KEY&type=video&maxResults=20&q=$q&pageToken=$nextPageToken";
 
-        if (!is_null($searchWords)) {
+        if (isset($searchWords)) {
             $curl = curl_init();
 
             // curl_setopt_array($curl, array(
@@ -53,7 +53,7 @@ class VideoSearchController extends Controller
             // CURLOPT_CUSTOMREQUEST => "GET",
             // ));
 
-            $response = curl_exec($curl);
+            // $response = curl_exec($curl);
             curl_close($curl);
             // echo $response
             // dd(json_encode(json_decode($response, true)));

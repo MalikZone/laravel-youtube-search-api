@@ -63,7 +63,7 @@
                   </div>
                 </div>
                 <div id="showMore" class="input-group-btn">
-                    <button id="btnShow" type="button" class="btn btn-primary">Show More</button>
+                    <button id="loadMore" type="button" class="btn btn-primary">Show More</button>
                 </div><!-- /btn-group -->
               </div>  
             </div>
@@ -78,53 +78,56 @@
 
 @push('ajax')
     <script type="text/javascript">
-            $(document).ready(function(){
-                $('#showMore').hide();
-                
-                var nextPageToken = '';
+        $(document).ready(function(){
+            $('#showMore').hide();
+            var nextPageToken = '';
+            var res = '';
 
-                $("#search").on("click", function(){
+            function getData(){
+                var words = $("#search-words").val();
 
-                    var words = $("#search-words").val();
-
-                    if (words = $("#search-words").val()) {
+                $.ajax({
+                    method: "GET",
+                    url: "/ajax-even-search",
+                    data: {
+                            searchWords : words,
+                            pageToken   : nextPageToken,
+                        },
+                    success: function(data) {
+                        nextPageToken = data.nextPageToken;
+                        // console.log(nextPageToken);
+                        // var res = '';
+                        $.each(data.items, function(key, value){
+                            res +=
+                            `<tr>
+                                <td>${words}</td>
+                                <td>
+                                    <a href="https://www.youtube.com/watch?v=${value.id.videoId}" target="_blank">
+                                        <img src="${value.snippet.thumbnails.default.url}">
+                                    </a>
+                                </td>
+                                <td>${value.snippet.description}</td>
+                                <td>${value.snippet.title}</td>
+                                <td>${value.snippet.channelTitle}</td>
+                            </tr>`
+                        });
+                        $('#youtubeList').html(res);
                         $('#showMore').show();
                     }
+                });        
+            }
 
-                    $.ajax({
-                        method: "GET",
-                        url: "/ajax-even-search",
-                        data: {
-                                searchWords:words,
-                                pageToken:nextPageToken,
-                            },
-                        success: function(data) {
-                            nextPageToken = data.nextPageToken;
-                            // console.log(nextPageToken);
-                            var res = '';
-                            $.each(data.items, function(key, value){
-                                res +=
-                                `<tr>
-                                    <td>${words}</td>
-                                    <td>
-                                        <a href="https://www.youtube.com/watch?v=${value.id.videoId}" target="_blank">
-                                            <img src="${value.snippet.thumbnails.default.url}">
-                                        </a>
-                                    </td>
-                                    <td>${value.snippet.description}</td>
-                                    <td>${value.snippet.title}</td>
-                                    <td>${value.snippet.channelTitle}</td>
-                                </tr>`
-                            });
-                            $('#youtubeList').html(res);
-                        }
-                    });
-                });
-
-                $('#btnShow').click(function(){
-                    alert('hallo');
-                });
-
+            $("#search").on("click", function(){
+                getData();
             });
+
+            $(document).on('click','#loadMore',function(){
+                $('#loadMore').html('Loading...');
+                // document.getElementById('loadMore').innerHTML = "Loading..."
+                // document.querySelector('#loadMore').innerHTML = ""
+                getData();
+                $('#loadMore').html('Show More');
+            });
+        });
     </script>
 @endpush
