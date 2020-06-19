@@ -1,4 +1,5 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="dist/clipboard.min.js"></script>
     <script src="{{url('asset/js/jquery.min.js')}}"></script>
     <script src="{{url('asset/js/jquery.ui.min.js')}}"></script>
     <script src="{{url('asset/js/bootstrap.min.js')}}"></script>

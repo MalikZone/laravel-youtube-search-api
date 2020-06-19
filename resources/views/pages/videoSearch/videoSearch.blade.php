@@ -2,16 +2,23 @@
 
 @section('content')
 
+    <style>
+        div.ex1 {
+            height: 500px;
+            width: 100%;
+            overflow-y: scroll;
+        }
+    </style>
     <div id="content" class="search-v1">
         <div class="panel">
             <div class="panel-body">
-                @if ($errors->any())
+                {{-- @if ($errors->any())
                     @foreach ($errors->all() as $error)
                         <div class="alert alert-danger" role="alert">
                             {{$error}}
                         </div>
                     @endforeach
-                @endif
+                @endif --}}
             <div class="col-md-12">
                 {{-- <form action="{{route('search')}}" method="post"> --}}
                 <form action="{{route('ajax-search')}}" method="get">
@@ -25,13 +32,40 @@
                 </form>
             </div>
 
+            <div class="col-md-12">
+                
+            </div>
+
             {{-- table --}}
             <div class="col-md-12 top-20 padding-0">
                 <div class="col-md-12">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                        Get Link
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Video Link</h4>
+                                </div>
+                                <div class="ex1">
+                                    <div class="modal-body" id="getLink">
+                                        Get Link
+                                    </div>
+                                </div>
+                                <button class="btn" data-clipboard-action="cut" data-clipboard-target="#bar">
+                                    Cut to clipboard
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                   <div class="panel">
                     <div class="panel-body">
                     <div class="responsive-table">
-                        <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                        <table class="table table-hover" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Keywords</th>
@@ -42,7 +76,7 @@
                                 </tr>
                             </thead>
                             <tbody id="youtubeList">
-                                {{-- @if (isset($youtubeList))
+                                {{-- @if (isset($items))
                                     @foreach ($youtubeList as $items)
                                         <tr>
                                             <td>{{$items['id']['videoId']}}</td>
@@ -68,8 +102,6 @@
               </div>  
             </div>
             {{-- end-table --}}
-
-
           </div>
         </div>
     </div>
@@ -80,8 +112,10 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $('#showMore').hide();
-            var nextPageToken = '';
-            var res = '';
+            var res             = '';
+            var link            = ''
+            var nextPageToken   = '';
+            var prevPageToken   = '';
 
             function getData(){
                 var words = $("#search-words").val();
@@ -92,11 +126,16 @@
                     data: {
                             searchWords : words,
                             pageToken   : nextPageToken,
+                            prevToken   : prevPageToken,
                         },
+                    beforeSend: function() {
+                        $('#loadMore').html('Loading...');
+                        $('#search').html('Loading...');
+                    },
                     success: function(data) {
                         nextPageToken = data.nextPageToken;
+                        prevPageToken = data.prevPageToken;
                         // console.log(nextPageToken);
-                        // var res = '';
                         $.each(data.items, function(key, value){
                             res +=
                             `<tr>
@@ -109,11 +148,20 @@
                                 <td>${value.snippet.description}</td>
                                 <td>${value.snippet.title}</td>
                                 <td>${value.snippet.channelTitle}</td>
-                            </tr>`
+                            </tr>`;
+                            link += 
+                            `<ul>
+                                <li>https://www.youtube.com/watch?v=${value.id.videoId}</li>
+                            </ul>`;
                         });
                         $('#youtubeList').html(res);
+                        $('#getLink').html(link);
                         $('#showMore').show();
-                    }
+                    },
+                    complete: function() {
+                        $('#loadMore').html('Show More');
+                        $('#search').html('Search');
+                    },
                 });        
             }
 
@@ -121,13 +169,14 @@
                 getData();
             });
 
-            $(document).on('click','#loadMore',function(){
-                $('#loadMore').html('Loading...');
+            $('#loadMore').on('click',function(){
+                // $('#loadMore').html('Loading...');
                 // document.getElementById('loadMore').innerHTML = "Loading..."
                 // document.querySelector('#loadMore').innerHTML = ""
                 getData();
-                $('#loadMore').html('Show More');
+                // $('#loadMore').html('Show More');
             });
+
         });
     </script>
 @endpush
