@@ -9,6 +9,7 @@
             overflow-y: scroll;
         }
     </style>
+
     <div id="content" class="search-v1">
         <div class="panel">
             <div class="panel-body">
@@ -63,7 +64,7 @@
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" data-clipboard-target="#getLink">
                                         <i class="fa fa-copy"></i>
-                                        Cut to clipboard
+                                        Copy to clipboard
                                     </button>
                                 </div>
                             </div>
@@ -174,18 +175,16 @@
                                         `);
                     },
                 });        
-            }
+            };
 
             $("#search").on("click", function(){
+                res     ='';
+                link    ='';
                 getData();
             });
 
             $('#loadMore').on('click',function(){
-                // $('#loadMore').html('Loading...');
-                // document.getElementById('loadMore').innerHTML = "Loading..."
-                // document.querySelector('#loadMore').innerHTML = ""
                 getData();
-                // $('#loadMore').html('Show More');
             });
 
         });
