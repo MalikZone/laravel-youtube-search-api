@@ -4,7 +4,7 @@
 
     <style>
         div.ex1 {
-            height: 500px;
+            height: 200px;
             width: 100%;
             overflow-y: scroll;
         }
@@ -26,7 +26,10 @@
                      <div class="input-group">
                         <input name="searchWords" id="search-words" type="search" class="form-control" aria-label="..." placeholder="search">
                         <div class="input-group-btn">
-                          <button id="search" type="button" class="btn btn-success">Search</button>
+                            <button id="search" type="button" class="btn btn-success">
+                                <i class="fa fa-search"></i>
+                                Search
+                            </button>
                         </div><!-- /btn-group -->
                     </div><!-- /input-group -->
                 </form>
@@ -41,7 +44,8 @@
                 <div class="col-md-12">
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-                        Get Link
+                        <i class="fa fa-download"></i>
+                        Get link
                     </button>
                     <!-- Modal -->
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -53,12 +57,15 @@
                                 </div>
                                 <div class="ex1">
                                     <div class="modal-body" id="getLink">
-                                        Get Link
+                                        {{-- link content --}}
                                     </div>
                                 </div>
-                                <button class="btn" data-clipboard-action="cut" data-clipboard-target="#bar">
-                                    Cut to clipboard
-                                </button>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" data-clipboard-target="#getLink">
+                                        <i class="fa fa-copy"></i>
+                                        Cut to clipboard
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -110,6 +117,7 @@
 
 @push('ajax')
     <script type="text/javascript">
+        new ClipboardJS('.btn');
         $(document).ready(function(){
             $('#showMore').hide();
             var res             = '';
@@ -151,7 +159,7 @@
                             </tr>`;
                             link += 
                             `<ul>
-                                <li>https://www.youtube.com/watch?v=${value.id.videoId}</li>
+                                https://www.youtube.com/watch?v=${value.id.videoId}
                             </ul>`;
                         });
                         $('#youtubeList').html(res);
@@ -160,7 +168,10 @@
                     },
                     complete: function() {
                         $('#loadMore').html('Show More');
-                        $('#search').html('Search');
+                        $('#search').html(`
+                                            <i class="fa fa-search"></i>
+                                            Search
+                                        `);
                     },
                 });        
             }
