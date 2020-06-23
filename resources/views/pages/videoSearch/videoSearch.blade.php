@@ -163,7 +163,7 @@
                                 <td>${value.snippet.title}</td>
                                 <td>${value.snippet.channelTitle}</td>
                                 <td>
-                                    <button type="button" id="delete" class="btn btn-danger">
+                                    <button type="button" id=${value.id.videoId} class="btn btn-danger delete">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
@@ -217,8 +217,8 @@
                             method: "GET",
                             url: "/ajax-even-search",
                             data: {
-                                searchWords : words,
-                                dataDel: arrDel,
+                                    searchWords : words,
+                                    dataDel: arrDel,
                                 },
                             success: function(data){
                                 // console.log(arrDel)
@@ -232,6 +232,26 @@
                     }
                 }
 
+            });
+
+            $("#id").click(function(){
+                var isDelete = confirm('Do you really want to delete records ?');
+                var id = $(this).data("id");
+                console.log(id);
+
+                if (isDelete==true) {
+                    $.ajax({
+                        method: "GET",
+                        utl: "/ajax-even-search",
+                        data: {
+                                searchWords : words,
+                                dataDel: id,
+                            },
+                        success: function(data){
+                            console.log(id);
+                        }
+                    }); 
+                }
             });
 
         });

@@ -14,8 +14,6 @@ class VideoSearchController extends Controller
     public function index()
     {
         $metaTittle = "Video Search";
-        
-
         return view ('pages.videoSearch.videoSearch', compact('metaTittle'));
     }
 
