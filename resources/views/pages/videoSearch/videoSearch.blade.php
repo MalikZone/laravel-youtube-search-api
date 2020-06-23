@@ -36,10 +36,6 @@
                 </form>
             </div>
 
-            <div class="col-md-12">
-                
-            </div>
-
             {{-- table --}}
             <div class="col-md-12 top-20 padding-0">
                 <div class="col-md-12">
@@ -47,6 +43,10 @@
                     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
                         <i class="fa fa-download"></i>
                         Get link
+                    </button>
+                    <button type="button" id="multiDelete" class="btn btn-danger btn-lg">
+                        <i class="fa fa-trash"></i>
+                        Delete
                     </button>
                     <!-- Modal -->
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -81,6 +81,7 @@
                                     <th>Description</th>
                                     <th>Title</th>
                                     <th>Channel Title</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="youtubeList">
@@ -120,9 +121,10 @@
     <script type="text/javascript">
         new ClipboardJS('.btn');
         $(document).ready(function(){
+
             $('#showMore').hide();
             var res             = '';
-            var link            = ''
+            var link            = '';
             var nextPageToken   = '';
             var prevPageToken   = '';
 
@@ -147,8 +149,11 @@
                         // console.log(nextPageToken);
                         $.each(data.items, function(key, value){
                             res +=
-                            `<tr>
-                                <td>${words}</td>
+                            `<tr id="tableRow_${value.id.videoId}">
+                                <td>
+                                    ${words}
+                                    <input type="checkbox" id=${value.id.videoId}>
+                                </td>
                                 <td>
                                     <a href="https://www.youtube.com/watch?v=${value.id.videoId}" target="_blank">
                                         <img src="${value.snippet.thumbnails.default.url}">
@@ -157,15 +162,21 @@
                                 <td>${value.snippet.description}</td>
                                 <td>${value.snippet.title}</td>
                                 <td>${value.snippet.channelTitle}</td>
+                                <td>
+                                    <button type="button" id="delete" class="btn btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
                             </tr>`;
                             link += 
-                            `<ul>
+                            `<ul id="ul_${value.id.videoId}">
                                 https://www.youtube.com/watch?v=${value.id.videoId}
                             </ul>`;
                         });
                         $('#youtubeList').html(res);
                         $('#getLink').html(link);
                         $('#showMore').show();
+
                     },
                     complete: function() {
                         $('#loadMore').html('Show More');
@@ -177,14 +188,50 @@
                 });        
             };
 
-            $("#search").on("click", function(){
-                res     ='';
-                link    ='';
-                getData();
+            $("#search").click(function(){
+                    res     ='';
+                    link    ='';
+                    getData();
             });
 
             $('#loadMore').on('click',function(){
                 getData();
+            });
+
+            $('#multiDelete').click(function(){
+                var words = $("#search-words").val();
+                var arrDel = [];
+
+                $("#youtubeList input[type=checkbox]").each(function(){
+                    if (jQuery(this).is(":checked")) {
+                        var videoId = this.id;
+                        arrDel.push(videoId);
+                    }
+                });
+
+                if (arrDel.length > 0) {
+                    var isDelete = confirm('Do you really want to delete records ?');
+
+                    if (isDelete == true) {
+                        $.ajax({
+                            method: "GET",
+                            url: "/ajax-even-search",
+                            data: {
+                                searchWords : words,
+                                dataDel: arrDel,
+                                },
+                            success: function(data){
+                                // console.log(arrDel)
+                                $.each(arrDel, function(key, value){
+                                console.log(value)
+                                    $("#tableRow_"+value).remove();
+                                    $("#ul_"+value).remove();
+                                });
+                            }
+                        });
+                    }
+                }
+
             });
 
         });
