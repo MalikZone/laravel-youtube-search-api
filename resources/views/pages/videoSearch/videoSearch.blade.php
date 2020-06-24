@@ -105,7 +105,7 @@
                     </div>
                   </div>
                 </div>
-                <div id="showMore" class="input-group-btn">
+                <div id="showMore" class="input-group-btn text-center">
                     <button id="loadMore" type="button" class="btn btn-primary">Show More</button>
                 </div><!-- /btn-group -->
               </div>  
@@ -142,6 +142,7 @@
                     beforeSend: function() {
                         $('#loadMore').html('Loading...');
                         $('#search').html('Loading...');
+                        $("#loadMore").prop( "disabled", true );
                     },
                     success: function(data) {
                         nextPageToken = data.nextPageToken;
@@ -163,7 +164,7 @@
                                 <td>${value.snippet.title}</td>
                                 <td>${value.snippet.channelTitle}</td>
                                 <td>
-                                    <button type="button" id=${value.id.videoId} class="btn btn-danger delete">
+                                    <button onclick="this.parentElement.parentElement.remove();" type="button" class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
@@ -176,6 +177,7 @@
                         $('#youtubeList').html(res);
                         $('#getLink').html(link);
                         $('#showMore').show();
+                        $("#loadMore").prop( "disabled", false );
 
                     },
                     complete: function() {
@@ -183,7 +185,7 @@
                         $('#search').html(`
                                             <i class="fa fa-search"></i>
                                             Search
-                                        `);
+                                        `);                        
                     },
                 });        
             };
@@ -195,7 +197,7 @@
             });
 
             $('#loadMore').on('click',function(){
-                getData();
+                getData()
             });
 
             $('#multiDelete').click(function(){
@@ -231,29 +233,7 @@
                         });
                     }
                 }
-
             });
-
-            $("#id").click(function(){
-                var isDelete = confirm('Do you really want to delete records ?');
-                var id = $(this).data("id");
-                console.log(id);
-
-                if (isDelete==true) {
-                    $.ajax({
-                        method: "GET",
-                        utl: "/ajax-even-search",
-                        data: {
-                                searchWords : words,
-                                dataDel: id,
-                            },
-                        success: function(data){
-                            console.log(id);
-                        }
-                    }); 
-                }
-            });
-
         });
     </script>
 @endpush

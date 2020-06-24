@@ -6,9 +6,9 @@
           <span class="middle"></span>
           <span class="bottom"></span>
         </div>
-          <a href="{{route('dashboard')}}" class="navbar-brand"> 
+          {{-- <a href="{{route('dashboard')}}" class="navbar-brand"> 
            <b>...</b>
-          </a>
+          </a> --}}
 
         {{-- <ul class="nav navbar-nav search-nav">
           <li>
@@ -23,7 +23,7 @@
           </li>
         </ul> --}}
 
-        <ul class="nav navbar-nav navbar-right user-nav">
+        {{-- <ul class="nav navbar-nav navbar-right user-nav">
           <li class="user-name"><span>???</span></li>
             <li class="dropdown avatar-dropdown">
              <img src="asset/img/avatar.jpg" class="img-circle avatar" alt="user name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"/>
@@ -41,7 +41,7 @@
             </ul>
           </li>
           <li ><a href="#" class="opener-right-menu"><span class="fa fa-coffee"></span></a></li>
-        </ul>
+        </ul> --}}
       </div>
     </div>
 </nav>
